@@ -1,0 +1,5 @@
+module:
+  id: custom-agents
+  name: Custom Research Agents
+  description: Project-specific agents for C5 neuro-symbolic research
+  unitary: true

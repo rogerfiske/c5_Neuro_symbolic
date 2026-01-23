@@ -1,0 +1,101 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Data (keep structure, exclude large files)
+data/processed/*
+!data/processed/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+
+# Model checkpoints and outputs (can be large)
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.pkl
+*.pickle
+
+# Experiment outputs (artifacts generated during research)
+_bmad-output/synapse/*/
+!_bmad-output/synapse/.gitkeep
+
+# Keep agent build outputs (these are source files)
+!_bmad-output/bmb-creations/
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Environment variables (if you create any)
+.env
+.env.local
+
+# PyTorch
+*.pth.tar
+
+# TensorFlow
+*.pb
+checkpoint
+
+# MLflow
+mlruns/
+
+# Weights & Biases
+wandb/
+
+# Large data files (adjust as needed)
+*.csv.gz
+*.csv.zip
+*.parquet
+
+# Keep structure files
+!.gitkeep
+!README.md
