@@ -1,0 +1,46 @@
+# Neuro-Symbolic Training Configuration
+# =====================================
+# Default configuration for H200 GPU
+
+# Data
+data_path: data/CA5_date.csv
+num_parts: 39
+sequence_length: 30
+val_years: 0.5
+test_years: 2.0
+
+# Model Architecture
+encoder_type: transformer  # 'lstm' or 'transformer'
+embed_dim: 64
+hidden_dim: 128
+num_layers: 2
+num_heads: 4
+dropout: 0.1
+
+# Symbolic Integration
+num_rules: 20
+rule_dim: 32
+use_symbolic_init: true
+rule_path: null  # Uses default rules
+
+# Training
+batch_size: 128  # Increase for H200
+learning_rate: 0.001
+weight_decay: 0.0001
+warmup_steps: 100
+max_epochs: 100
+patience: 15
+gradient_clip: 1.0
+accumulate_grad: 1
+
+# Prediction
+pool_size: 27
+
+# Hardware
+precision: "16-mixed"  # FP16 for speed
+num_workers: 4
+
+# Output
+output_dir: outputs
+checkpoint_dir: outputs/checkpoints
+log_dir: outputs/logs

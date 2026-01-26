@@ -1,0 +1,36 @@
+# Deep Learning Neuro-Symbolic Pipeline
+# For RunPod PyTorch 2.8.0 Template (B200 GPU)
+# Also compatible with PyTorch 2.4.x (H200 GPU)
+
+# Core ML (already in template, but pinned for reproducibility)
+torch>=2.4.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Training infrastructure
+pytorch-lightning>=2.2.0
+torchmetrics>=1.3.0
+
+# Hyperparameter optimization
+optuna>=3.5.0
+optuna-integration[pytorch_lightning]>=3.6.0
+optuna-dashboard>=0.15.0
+
+# Visualization & logging
+matplotlib>=3.8.0
+seaborn>=0.13.0
+tensorboard>=2.16.0
+wandb>=0.16.0
+
+# Jupyter support
+jupyterlab>=4.1.0
+ipywidgets>=8.1.0
+
+# Utilities
+tqdm>=4.66.0
+pyyaml>=6.0.0
+scikit-learn>=1.4.0
+rich>=13.0.0
+
+# For symbolic rule integration
+networkx>=3.2.0
