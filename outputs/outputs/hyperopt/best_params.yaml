@@ -1,0 +1,19 @@
+best_params:
+  batch_size: 64
+  dropout: 0.2
+  embed_dim: 128
+  encoder_type: transformer
+  hidden_dim: 192
+  learning_rate: 9.698359171497021e-05
+  num_heads: 2
+  num_layers: 3
+  num_rules: 10
+  pool_size: 30
+  rule_dim: 16
+  sequence_length: 14
+  use_symbolic_init: false
+  weight_decay: 0.0003450071953109623
+best_trial: 43
+best_value: 72.37569427490234
+n_trials: 50
+timestamp: '2026-01-26T16:49:41.758555'
