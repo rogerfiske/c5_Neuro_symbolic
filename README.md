@@ -302,11 +302,36 @@ Phase 1 established baselines and overall neural lift. Phase 2 explores whether 
 - **Gap patterns**: Does time-since-last-use have predictive power per part?
 - **External features**: Day-of-week, holidays, known maintenance schedules?
 
+### Phase 2 Findings
+
+#### Hard Parts Identified
+Six parts with <70% recall at K=30: **[12, 8, 13, 22, 23, 39]**
+
+| Category | Count | Recall @K=27 | Recall @K=30 |
+|----------|-------|--------------|--------------|
+| Hard | 6 | 55.8% | 64.4% |
+| Medium | 20 | 70.1% | 78.5% |
+| Easy | 13 | 74.2% | 80.6% |
+
+#### Temporal Pattern Analysis
+Hard parts show **no exploitable temporal patterns**:
+- Yearly trends: All STABLE (slope < 0.1%/year)
+- Monthly seasonality: Weak (CV 6-11%)
+- Autocorrelation: Very weak (< 0.02)
+
+**Conclusion**: Hard parts are genuinely stochastic, not predictable via temporal features.
+
+#### Miss Distribution Analysis
+- Hard parts = 15.4% of parts but **21% of misses** (1.36x disproportionate)
+- Neural model's +3.5pp lift (~25 days) likely comes from improved hard part predictions
+
 ### Phase 2 Deliverables
 
 | Analysis | Script | Status |
 |----------|--------|--------|
-| Per-part accuracy breakdown | `scripts/part_analysis.py` | ⏳ Planned |
+| Per-part accuracy breakdown | `scripts/part_analysis.py` | ✅ Complete |
+| Hard parts temporal analysis | `scripts/hard_parts_temporal.py` | ✅ Complete |
+| Neural vs baseline by category | `scripts/neural_vs_baseline_hard_parts.py` | ✅ Complete |
 | Attention visualization | `scripts/attention_analysis.py` | ⏳ Planned |
 | Confidence calibration | `scripts/calibration_analysis.py` | ⏳ Planned |
 | Ensemble experiments | `scripts/ensemble_experiments.py` | ⏳ Planned |
@@ -356,22 +381,31 @@ pip install torch pytorch-lightning optuna rich
 
 | Component | Status | Date |
 |-----------|--------|------|
-| Per-Part Predictability | ⏳ Planned | - |
+| Per-Part Predictability | ✅ Complete | 2026-01-26 |
+| Hard Parts Temporal | ✅ Complete | 2026-01-26 |
+| Neural vs Baseline by Category | ✅ Complete | 2026-01-26 |
 | Attention Analysis | ⏳ Planned | - |
 | Confidence Calibration | ⏳ Planned | - |
 | Ensemble Experiments | ⏳ Planned | - |
 | **Phase 2** | **🔄 In Progress** | **2026-01-26** |
 
-**Overall Progress**: Phase 1 complete, Phase 2 starting
+**Overall Progress**: Phase 1 complete, Phase 2 ~50% complete
 
 ---
 
 ## Change Log
 
-### 2026-01-26 (Session 3 - Phase 1 Complete, Phase 2 Started)
+### 2026-01-26 (Session 3 - Phase 1 Complete, Phase 2 Progress)
 - Collected RunPod hyperopt results: 72.4% GoB @K=30 (best trial #43)
 - Final test performance: 69% GoB (24% Excellent, 45% Good, 31% Unacceptable)
 - Completed K-Optimizer and Ablation Report
+- **Critical insight**: K=39 achieves 100% trivially - must evaluate at fixed K
+- **Revised finding**: Neural adds ~3pp at fixed K, not 16pp (that was K expansion)
+- **Phase 2 Analysis**:
+  - Identified 6 hard parts: [12, 8, 13, 22, 23, 39]
+  - Temporal analysis: Hard parts are genuinely stochastic (no exploitable patterns)
+  - Miss analysis: Hard parts = 21% of misses (1.36x disproportionate)
+  - Neural model value likely concentrated on hard part predictions
 - **Critical insight**: K=39 achieves 100% trivially — must evaluate at fixed K
 - **Revised finding**: Neural adds ~3pp at fixed K, not 16pp (that was K expansion)
 - All 8 Synapse workflows complete
