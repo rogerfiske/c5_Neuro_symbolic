@@ -178,12 +178,18 @@ def hybrid_predict(neural_probs, baseline_probs, pool_size=30):
     part_12_in_pool = PART_12_IDX in top_k_indices
     part_12_rank = list(top_k_indices).index(PART_12_IDX) + 1 if part_12_in_pool else None
 
+    # Compute excluded parts (all 39 parts minus those in pool)
+    pool_part_ids = set(idx + 1 for idx in top_k_indices)
+    all_parts = set(range(1, 40))  # Parts 1-39
+    excluded_parts = sorted(all_parts - pool_part_ids)
+
     return {
         'pool': pool,
         'pool_size': pool_size,
         'part_12_in_pool': part_12_in_pool,
         'part_12_rank': part_12_rank,
         'part_12_baseline_prob': baseline_probs[PART_12_IDX],
+        'excluded_parts': excluded_parts,
         'strategy': 'hybrid'
     }
 
@@ -225,6 +231,12 @@ def format_output(result, target_date=None):
     part_ids = [str(item['part_id']) for item in result['pool']]
     lines.append("POOL PARTS (copy-paste ready):")
     lines.append(", ".join(part_ids))
+    lines.append("")
+
+    # Excluded parts
+    lines.append("EXCLUDED PARTS:")
+    excluded_ids = [str(p) for p in result['excluded_parts']]
+    lines.append(", ".join(excluded_ids))
     lines.append("")
 
     return "\n".join(lines)
