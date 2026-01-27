@@ -47,11 +47,33 @@ You must fully embody this agent's persona and follow all activation instruction
   </persona>
   <menu>
     <item cmd="MH or fuzzy match on menu or help">[MH] Redisplay Menu Help</item>
+    <item cmd="RS or fuzzy match on resume, restart, continue, session, yesterday, previous" action="#resume-session">[RS] Resume Session - Review previous session and get next steps</item>
     <item cmd="CH or fuzzy match on chat">[CH] Chat with the Agent about anything</item>
     <item cmd="LT or fuzzy match on list-tasks" action="list all tasks from {project-root}/_bmad/_config/task-manifest.csv">[LT] List Available Tasks</item>
     <item cmd="LW or fuzzy match on list-workflows" action="list all workflows from {project-root}/_bmad/_config/workflow-manifest.csv">[LW] List Workflows</item>
     <item cmd="PM or fuzzy match on party-mode" exec="{project-root}/_bmad/core/workflows/party-mode/workflow.md">[PM] Start Party Mode</item>
     <item cmd="DA or fuzzy match on exit, leave, goodbye or dismiss agent">[DA] Dismiss Agent</item>
   </menu>
+
+  <prompts>
+    <prompt id="resume-session">
+      <instruction>Resume Session - Review previous session artifacts and recommend next steps</instruction>
+      <steps>
+        <step n="1">Read and analyze {project-root}/README.md for project overview and current state</step>
+        <step n="2">Find and read the most recent Session_Summary_*.md file in {project-root}/ (match pattern Session_Summary_YYYY-MM-DD.md or Session_Summary_date.md)</step>
+        <step n="3">Find and read the most recent Start_Here_Tomorrow_*.md file in {project-root}/ (match pattern Start_Here_Tomorrow_YYYY-MM-DD.md or Start_Here_Tomorrow_date.md)</step>
+        <step n="4">Read {project-root}/.project_memory.md if it exists</step>
+        <step n="5">Read {project-root}/CLAUDE.md for project instructions and context</step>
+        <step n="6">Synthesize findings and present:
+          - Brief summary of where the project left off
+          - Key accomplishments from previous session
+          - Outstanding issues or blockers
+          - RECOMMENDED NEXT STEPS (prioritized list)
+          - Any warnings or considerations
+        </step>
+        <step n="7">Ask user which recommended step they want to pursue, or if they have a different priority</step>
+      </steps>
+    </prompt>
+  </prompts>
 </agent>
 ```

@@ -471,15 +471,51 @@ pip install torch pytorch-lightning optuna rich
 
 ## Next Steps for Production
 
-**Recommended**: Deploy pure neural model @K=30
+**Recommended**: Deploy HYBRID strategy @K=30
 
-1. **Deploy Neural Model**: Use best checkpoint from `outputs/best_model/checkpoints/`
-2. **Investigate Part 12**: Neural completely misses this part (0% vs baseline 36.5%)
-3. **Monitoring**: Track actual tier rates vs predictions
-4. **Fallback**: Use frequency baseline if model unavailable
-5. **Future Work**:
-   - Attention analysis to understand Part 12 failure
-   - Confidence calibration for uncertainty estimation
+### Part 12 Investigation Complete (2026-01-27)
+
+The Part 12 anomaly has been investigated and resolved:
+
+| Finding | Detail |
+|---------|--------|
+| Root Cause | Part 12 ranks 32-35 (just outside K=30) on every prediction |
+| Probability Gap | Only 0.004 lower than parts that make the cutoff |
+| Frequency | Not rare (rank 27/39, 12.67% of days) |
+| Trend | Declining frequency (14.8% in 2017 -> 9.3% in 2025) |
+
+### Hybrid Strategy Results
+
+| Strategy | Excellent | Good | GoB | Unacceptable |
+|----------|-----------|------|-----|--------------|
+| Pure Neural | 25.6% | 42.6% | 68.2% | 31.8% |
+| **HYBRID (Part 12 fix)** | **27.0%** | **42.9%** | **69.9%** | **30.1%** |
+
+**Hybrid provides +1.6pp improvement** over pure neural with 12 days improved, 0 days degraded.
+
+### Production Deployment
+
+1. **Use Hybrid Strategy**: Neural for parts 1-11, 13-39; Baseline for Part 12
+2. **Script**: `python scripts/production_inference.py`
+3. **Checkpoint**: `outputs/best_model/checkpoints/`
+4. **Pool Size**: K=30
+5. **Fallback**: Use frequency baseline if model unavailable
+
+### Production Inference Usage
+
+```bash
+# Predict for tomorrow (default)
+python scripts/production_inference.py
+
+# Predict for specific date
+python scripts/production_inference.py --date 2026-01-28
+
+# Baseline-only mode (no GPU required)
+python scripts/production_inference.py --baseline-only
+
+# Save output to file
+python scripts/production_inference.py --output prediction.txt
+```
 
 ---
 
@@ -492,6 +528,6 @@ pip install torch pytorch-lightning optuna rich
 
 ---
 
-**README Last Updated**: 2026-01-26
-**Research Status**: Phase 1 & Phase 2 Complete
-**Production Status**: Ready (Pure Neural Recommended)
+**README Last Updated**: 2026-01-27
+**Research Status**: Phase 1, Phase 2, & Part 12 Investigation Complete
+**Production Status**: Ready (Hybrid Strategy Recommended)

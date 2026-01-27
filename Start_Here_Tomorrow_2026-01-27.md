@@ -1,5 +1,7 @@
 # Start Here Tomorrow: 2026-01-27
 
+## /synapse
+
 ## Quick Context
 **Project**: C5 Neuro-Symbolic Predictive Maintenance
 **Status**: Phase 2 Complete, Production Ready

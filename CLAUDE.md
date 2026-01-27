@@ -45,13 +45,16 @@ Neural model excels on hard parts:
 - Hard parts: +36.8pp lift over baseline
 - Easy parts: +2.8pp lift over baseline
 
-### Part 12 Anomaly
-- Neural: 0% recall
+### Part 12 Anomaly - RESOLVED
+- Neural: 0% recall (ranks 32-35, just outside K=30)
 - Baseline: 36.5% recall
-- **Investigation needed** - script at `scripts/part12_investigation.py`
+- **Root Cause**: Model assigns 0.004 lower probability, pushing it just outside pool
+- **Solution**: Hybrid strategy (baseline for Part 12 only)
 
-### Ensemble Finding
-Pure neural is optimal. All ensemble strategies tested underperform pure neural.
+### Hybrid Strategy (Production Recommended)
+- Neural for parts 1-11, 13-39
+- Baseline for Part 12 ONLY
+- Result: 69.9% GoB (+1.6pp over pure neural)
 
 ## Agent Activation
 ```
@@ -70,9 +73,11 @@ Activates Dr. Synapse - Neuro-Symbolic ML Research Engineer
 | `Phase 2 outputs/` | RunPod B200 analysis results |
 
 ## Production Recommendation
-**Deploy pure neural model @K=30**
-- Use checkpoint from `outputs/best_model/checkpoints/`
-- Consider special handling for Part 12
+**Deploy HYBRID strategy @K=30**
+- Neural for parts 1-11, 13-39
+- Baseline for Part 12 ONLY
+- Use `python scripts/production_inference.py`
+- Checkpoint: `outputs/best_model/checkpoints/`
 - Fallback: frequency baseline
 
 ## Session History
@@ -80,8 +85,9 @@ Activates Dr. Synapse - Neuro-Symbolic ML Research Engineer
 - **2026-01-22**: Synapse agent created
 - **2026-01-23**: RunPod H200 training (50 trials)
 - **2026-01-26**: Phase 2 complete on B200 (per-part + ensemble analysis)
+- **2026-01-27**: Part 12 investigation complete, hybrid strategy implemented
 
 ## Next Steps
-1. Investigate Part 12 anomaly
-2. Attention analysis
-3. Production deployment preparation
+1. ~~Investigate Part 12 anomaly~~ DONE
+2. Attention analysis (optional - for deeper understanding)
+3. ~~Production deployment preparation~~ DONE - hybrid strategy ready
