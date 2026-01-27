@@ -216,11 +216,26 @@ Medium - Straightforward extension of current architecture
 
 ## Recommended Priority Order
 
-1. **Column-Position Features** (Direction 3) - Lowest effort, can test quickly
-2. **Position Embeddings** (Direction 1) - Low effort, principled approach
-3. **Per-Column Output Heads** (Direction 5) - Medium effort, good potential
-4. **Ensemble** (Direction 4) - Higher effort, may not beat simpler approaches
-5. **Separate Attention Heads** (Direction 2) - Highest effort, uncertain benefit
+1. **Column-Position Features** (Direction 3) - Lowest effort, can test quickly - **IMPLEMENTED**
+2. **Position Embeddings** (Direction 1) - Low effort, principled approach - **IMPLEMENTED**
+3. **Per-Column Output Heads** (Direction 5) - Medium effort, good potential - **IMPLEMENTED**
+4. **Ensemble** (Direction 4) - Higher effort, may not beat simpler approaches - **IMPLEMENTED** (via fusion gate)
+5. **Separate Attention Heads** (Direction 2) - Highest effort, uncertain benefit - DEFERRED
+
+## Implementation Status (2026-01-27)
+
+All approaches implemented in `runpod_package/models/column_enhanced.py`:
+
+| Approach | Class/Config | Status |
+|----------|--------------|--------|
+| Column Position Embeddings | `ColumnAwareEmbedding` | Ready |
+| Column-Position Features | `ColumnFeatureEmbedding` | Ready |
+| Per-Column Output Heads | `PerColumnOutputHeads` | Ready |
+| Ensemble (via fusion gate) | Built into output heads | Ready |
+| Separate Attention | `ColumnSeparateAttention` | Implemented but not tested |
+
+Training script: `runpod_package/train_column_enhanced.py`
+Local test: `scripts/test_column_enhanced_model.py` - All 6 configs PASS
 
 ---
 

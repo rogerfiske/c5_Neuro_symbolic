@@ -60,3 +60,44 @@ The B200 with PyTorch 2.8.0 may offer:
 - Better torch.compile support
 - Improved memory efficiency
 - Faster attention computation
+
+---
+
+## Phase 3: Column-Enhanced Neural Models (2026-01-27)
+
+### Overview
+
+Tests neural architectures that incorporate column-position information.
+Each column (m_1 to m_5) has distinct part distributions - the neural model
+should learn to exploit these patterns.
+
+### Configurations Tested
+
+| Name | Embedding | Output Heads | Description |
+|------|-----------|--------------|-------------|
+| baseline_standard | Standard | Single | Original architecture |
+| column_aware_embed | Column-Aware | Single | Adds column embeddings |
+| column_features_embed | Column-Features | Single | Adds explicit column stats |
+| column_output_heads | Standard | Per-Column | 5 separate prediction heads |
+| column_aware_with_heads | Column-Aware | Per-Column | Combined approach |
+| column_features_with_heads | Column-Features | Per-Column | Full enhancement |
+
+### Quick Start
+
+```bash
+# Run column-enhanced experiments
+python train_column_enhanced.py
+
+# Results saved to:
+# outputs/column_enhanced/experiment_results.csv
+# outputs/column_enhanced/{config_name}/checkpoints/
+```
+
+### Expected Improvements
+
+Based on column distribution analysis:
+- m_1 concentrates on parts 1-18
+- m_5 concentrates on parts 22-39
+- Parts like Part 12 may benefit from column-specific handling
+
+Target: >70% GoB (vs current 68.2% pure neural, 69.9% hybrid)
