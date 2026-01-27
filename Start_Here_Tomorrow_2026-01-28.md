@@ -67,12 +67,23 @@ Per-column frequency baseline did NOT beat global (-0.4pp), but the column-speci
 
 See `docs/research_backlog_neural_column_features.md` for 5 approaches:
 
-### Priority Order
-1. **Column-Position Features** - Low effort, test locally first
-2. **Position Embeddings** - Low effort, principled approach
-3. **Per-Column Output Heads** - Medium effort, good potential
-4. **Ensemble** - Higher effort
-5. **Separate Attention Heads** - Highest effort
+### All Approaches IMPLEMENTED - Ready for RunPod
+
+```bash
+# On RunPod:
+cd /workspace/runpod_package
+python train_column_enhanced.py
+```
+
+Tests 6 configurations:
+1. baseline_standard (control)
+2. column_aware_embed
+3. column_features_embed
+4. column_output_heads
+5. column_aware_with_heads
+6. column_features_with_heads
+
+Results saved to: `outputs/column_enhanced/experiment_results.csv`
 
 ### Column Distribution Summary
 | Column | 95% Range | Top Part |

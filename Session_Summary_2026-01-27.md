@@ -158,13 +158,58 @@ Tested hypothesis that column-specific part ranges could improve predictions.
 
 ---
 
+## Neural Column-Enhancement Implementation (Late Session)
+
+Implemented all 5 neural approaches to incorporate column-position information.
+
+### New Model Architectures
+
+| Config | Embedding | Output Heads | Parameters |
+|--------|-----------|--------------|------------|
+| baseline_standard | Standard | Single | 243K |
+| column_aware_embed | Column-Aware | Single | 243K |
+| column_features_embed | Column-Features | Single | 247K |
+| column_output_heads | Standard | Per-Column | 351K |
+| column_aware_with_heads | Column-Aware | Per-Column | 351K |
+| column_features_with_heads | Column-Features | Per-Column | 355K |
+
+### Files Created
+
+| File | Purpose |
+|------|---------|
+| `runpod_package/models/column_enhanced.py` | 4 new model classes |
+| `runpod_package/train_column_enhanced.py` | Training script (6 configs) |
+| `scripts/test_column_enhanced_model.py` | Local verification |
+
+### Local Test Results
+
+All 6 architectures verified:
+- Forward pass: PASS
+- Gradient flow: PASS
+- Output shapes: Correct
+- Ready for RunPod deployment
+
+### RunPod Command
+
+```bash
+cd /workspace/runpod_package
+python train_column_enhanced.py
+```
+
+### Target
+
+- Current best: 69.9% GoB (hybrid)
+- Target: >70% GoB with column-enhanced neural
+
+---
+
 ## Next Session Recommendations
 
-1. **Monitor Production Predictions** - Track actual vs predicted over time
-2. **Neural Column Features** - Implement Direction 3 (column-position features) first
-3. **RunPod Training** - Test neural enhancements on GPU
+1. **Run RunPod Experiment** - Deploy and run `train_column_enhanced.py`
+2. **Analyze Results** - Compare 6 configurations
+3. **Production Update** - If improved, update production inference
 
 ---
 
 **Session End Time**: 2026-01-27
-**Project Status**: Production Ready (Hybrid Strategy) + Research Backlog Active
+**Project Status**: Production Ready + Neural Enhancements Ready for RunPod
