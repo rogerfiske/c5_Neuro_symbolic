@@ -123,13 +123,48 @@ python scripts/production_inference.py
 
 ---
 
+## Per-Column Experiment (Late Session)
+
+Tested hypothesis that column-specific part ranges could improve predictions.
+
+### Column Distributions (95th percentile)
+| Column | Parts | Range |
+|--------|-------|-------|
+| m_1 | 17 | 1-18 |
+| m_2 | 24 | 2-25 |
+| m_3 | 27 | 7-33 |
+| m_4 | 24 | 15-38 |
+| m_5 | 18 | 22-39 |
+
+### Results (Stable K per Column)
+| K/Col | Pool | GoB |
+|-------|------|-----|
+| Global | 30 | **68.7%** |
+| K=4 | 20 | 66.5% |
+| K=5 | 25 | 66.6% |
+| K=6 | 30 | 66.3% |
+| K=8 | 40 | 68.3% |
+
+**Finding**: Per-column frequency baseline does NOT beat global (-0.4pp at best).
+**Recommendation**: Incorporate column insights into neural model instead.
+
+### Research Backlog Created
+`docs/research_backlog_neural_column_features.md` documents 5 neural approaches:
+1. Position embeddings per column
+2. Separate attention heads per column
+3. Column-position features
+4. Ensemble (global + per-column)
+5. Per-column output heads
+
+---
+
 ## Next Session Recommendations
 
 1. **Monitor Production Predictions** - Track actual vs predicted over time
-2. **Attention Analysis** (Optional) - Understand why model undervalues Part 12
-3. **Periodic Retraining** - Consider as Part 12 trend continues
+2. **Neural Column Features** - Implement Direction 3 (column-position features) first
+3. **RunPod Training** - Test neural enhancements on GPU
 
 ---
 
 **Session End Time**: 2026-01-27
-**Project Status**: Production Ready (Hybrid Strategy)
+**Project Status**: Production Ready (Hybrid Strategy) + Research Backlog Active

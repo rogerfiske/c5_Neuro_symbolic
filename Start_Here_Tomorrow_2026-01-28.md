@@ -61,20 +61,38 @@ python scripts/production_inference.py --baseline-only
 
 ---
 
-## Optional Next Steps
+## Research Backlog: Neural Column Features
 
-### 1. Attention Analysis (Nice to Have)
-Understand what the Transformer "sees" that makes it undervalue Part 12
-- Would provide deeper model interpretability
-- Not required for production
+Per-column frequency baseline did NOT beat global (-0.4pp), but the column-specific distributions are real and could benefit the neural model.
 
-### 2. Monitoring Dashboard
+See `docs/research_backlog_neural_column_features.md` for 5 approaches:
+
+### Priority Order
+1. **Column-Position Features** - Low effort, test locally first
+2. **Position Embeddings** - Low effort, principled approach
+3. **Per-Column Output Heads** - Medium effort, good potential
+4. **Ensemble** - Higher effort
+5. **Separate Attention Heads** - Highest effort
+
+### Column Distribution Summary
+| Column | 95% Range | Top Part |
+|--------|-----------|----------|
+| m_1 | 1-18 | Part 1 (12.8%) |
+| m_2 | 2-25 | Part 10 (6.1%) |
+| m_3 | 7-33 | Part 19 (4.9%) |
+| m_4 | 15-38 | Part 30 (5.8%) |
+| m_5 | 22-39 | Part 39 (13.3%) |
+
+---
+
+## Other Optional Steps
+
+### 1. Monitoring Dashboard
 - Track actual tier rates vs predictions
 - Alert if model performance degrades
 
-### 3. Model Retraining Schedule
+### 2. Model Retraining Schedule
 - Consider periodic retraining as new data accumulates
-- Part 12 trend (declining frequency) may continue
 
 ---
 

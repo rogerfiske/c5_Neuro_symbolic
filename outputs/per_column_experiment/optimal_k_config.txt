@@ -1,0 +1,11 @@
+Optimal K per Column
+==============================
+m_1: K=2
+m_2: K=3
+m_3: K=10
+m_4: K=13
+m_5: K=8
+
+Total K sum: 36
+Expected pool before dedup: 36
+Final pool size: 30
