@@ -82,16 +82,38 @@ should learn to exploit these patterns.
 | column_aware_with_heads | Column-Aware | Per-Column | Combined approach |
 | column_features_with_heads | Column-Features | Per-Column | Full enhancement |
 
-### Quick Start
+### Quick Start (Standalone - NO Jupyter Notebook Required)
+
+The `train_column_enhanced.py` script is completely standalone. You do NOT need
+to run any Jupyter notebook cells first.
 
 ```bash
-# Run column-enhanced experiments
+# 1. Upload and extract package
+cd /workspace
+unzip runpod_package.zip  # Or runpod_package_phase2.zip
+cd runpod_package
+
+# 2. Install dependencies (only step needed from notebook)
+pip install -r requirements.txt
+
+# 3. Verify data file exists
+ls data/CA5_date.csv
+
+# 4. Run column-enhanced experiments (trains all 6 configs)
 python train_column_enhanced.py
 
 # Results saved to:
 # outputs/column_enhanced/experiment_results.csv
 # outputs/column_enhanced/{config_name}/checkpoints/
 ```
+
+### What This Script Does
+
+1. Loads data directly from `data/CA5_date.csv`
+2. Uses hyperparameters from the best Phase 1 model (already baked in)
+3. Trains 6 different architectures (5 epochs each by default)
+4. Evaluates each on validation set
+5. Saves comparison results to CSV
 
 ### Expected Improvements
 

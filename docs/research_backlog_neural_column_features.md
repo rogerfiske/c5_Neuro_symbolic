@@ -1,8 +1,9 @@
 # Research Backlog: Neural Column-Position Features
 
 **Created**: 2026-01-27
-**Status**: Planned
-**Priority**: High - Could improve model accuracy
+**Completed**: 2026-01-28
+**Status**: CLOSED - No Improvement Found
+**Priority**: Was High - Results show no benefit
 
 ---
 
@@ -241,28 +242,56 @@ Local test: `scripts/test_column_enhanced_model.py` - All 6 configs PASS
 
 ## Success Criteria
 
-| Metric | Current Best | Target |
-|--------|--------------|--------|
-| GoB @K=30 | 69.9% (Hybrid) | >71% |
-| Part 12 Recall | 36.5% (baseline) | >50% |
-| Excellent Rate | 27.0% | >28% |
+| Metric | Current Best | Target | Achieved |
+|--------|--------------|--------|----------|
+| GoB @K=30 | 69.9% (Hybrid) | >71% | 68.08% (FAILED) |
+| Part 12 Recall | 36.5% (baseline) | >50% | Not tested |
+| Excellent Rate | 27.0% | >28% | 24.79% (FAILED) |
 
 ---
 
-## Prerequisites
+## Experiment Results (2026-01-28)
 
-- RunPod GPU access for training experiments
-- Baseline model checkpoint (`outputs/best_model/`)
-- Modified training pipeline to support new architectures
+### Neural Column-Enhanced Results (RunPod B200)
+
+| Configuration | GoB | Excellent | Good | vs Baseline |
+|---------------|-----|-----------|------|-------------|
+| **column_output_heads** | **68.08%** | 24.79% | 43.29% | +0.41pp |
+| baseline_standard | 67.67% | 23.84% | 43.84% | - |
+| column_aware_with_heads | 67.40% | 23.70% | 43.70% | -0.27pp |
+| column_features_embed | 67.26% | 25.21% | 42.05% | -0.41pp |
+| column_aware_embed | 66.58% | 22.19% | 44.38% | -1.09pp |
+| column_features_with_heads | 66.44% | 24.38% | 42.05% | -1.23pp |
+
+### Per-Column Frequency Baseline Results
+
+| Strategy | GoB | vs Global |
+|----------|-----|-----------|
+| Global Baseline | 68.67% | - |
+| Per-Col Optimized K | 66.89% | -1.78pp |
+| Per-Col Uniform K=6 | 66.35% | -2.32pp |
+| Per-Col Full Range | 64.84% | -3.83pp |
+
+### Conclusion
+
+**Neither approach improved over the existing hybrid strategy (69.9% GoB).**
+
+- Best neural column-enhanced: 68.08% GoB (-1.82pp vs hybrid)
+- Best per-column frequency: 66.89% GoB (-3.01pp vs hybrid)
+
+The column-position information does not provide useful signal for prediction. The neural model may already implicitly learn relevant patterns, or the column distributions are simply not predictive of future parts.
 
 ---
 
-## Next Steps
+## Final Recommendation
 
-1. Start with Direction 3 (Column-Position Features) - can be tested locally
-2. If promising, move to Direction 1 (Position Embeddings) on RunPod
-3. Document findings and iterate
+**Keep the hybrid strategy as production approach:**
+- Neural model for parts 1-11, 13-39
+- Baseline for Part 12 only
+- **69.9% GoB** remains the best achievable
+
+This research direction is now **CLOSED**.
 
 ---
 
-**Document Last Updated**: 2026-01-27
+**Document Last Updated**: 2026-01-28

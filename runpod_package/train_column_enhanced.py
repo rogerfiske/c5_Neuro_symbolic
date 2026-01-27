@@ -52,6 +52,10 @@ class ColumnEnhancedModule(pl.LightningModule):
         # Pool size for evaluation
         self.pool_size = config.get('pool_size', 30)
 
+        # Storage for epoch-end aggregation (Lightning 2.0+ compatible)
+        self.validation_step_outputs = []
+        self.test_step_outputs = []
+
     def forward(self, x):
         return self.model(x)
 
@@ -118,10 +122,16 @@ class ColumnEnhancedModule(pl.LightningModule):
         self.log('val_loss', loss, prog_bar=True)
         self.log('val_hits', metrics['hits_mean'], prog_bar=True)
 
+        # Store for epoch-end aggregation (Lightning 2.0+)
+        self.validation_step_outputs.append({'loss': loss, 'metrics': metrics})
         return {'loss': loss, 'metrics': metrics}
 
-    def validation_epoch_end(self, outputs):
-        # Aggregate metrics
+    def on_validation_epoch_end(self):
+        # Aggregate metrics from stored outputs
+        outputs = self.validation_step_outputs
+        if not outputs:
+            return
+
         total = sum(o['metrics']['total'] for o in outputs)
         excellent = sum(o['metrics']['excellent'] for o in outputs)
         good = sum(o['metrics']['good'] for o in outputs)
@@ -133,11 +143,29 @@ class ColumnEnhancedModule(pl.LightningModule):
         self.log('val_excellent_pct', excellent / total * 100 if total > 0 else 0)
         self.log('val_good_pct', good / total * 100 if total > 0 else 0)
 
-    def test_step(self, batch, batch_idx):
-        return self.validation_step(batch, batch_idx)
+        # Clear for next epoch
+        self.validation_step_outputs.clear()
 
-    def test_epoch_end(self, outputs):
+    def test_step(self, batch, batch_idx):
+        sequences = batch['sequence']
+        targets = batch['target']
+
+        logits, aux = self.model(sequences)
+        loss = self.compute_loss(logits, targets)
+
+        probs = torch.sigmoid(logits)
+        metrics = self.compute_metrics(probs, targets)
+
+        # Store for epoch-end aggregation (Lightning 2.0+)
+        self.test_step_outputs.append({'loss': loss, 'metrics': metrics})
+        return {'loss': loss, 'metrics': metrics}
+
+    def on_test_epoch_end(self):
         # Same aggregation as validation
+        outputs = self.test_step_outputs
+        if not outputs:
+            return
+
         total = sum(o['metrics']['total'] for o in outputs)
         excellent = sum(o['metrics']['excellent'] for o in outputs)
         good = sum(o['metrics']['good'] for o in outputs)
@@ -156,6 +184,9 @@ class ColumnEnhancedModule(pl.LightningModule):
         print(f"Good: {good}/{total} ({good/total*100:.1f}%)")
         print(f"GoB: {gob}/{total} ({gob/total*100:.1f}%)")
         print(f"Unacceptable: {unacceptable}/{total} ({unacceptable/total*100:.1f}%)")
+
+        # Clear for next test run
+        self.test_step_outputs.clear()
 
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(
