@@ -24,11 +24,13 @@ sequence_length: 14  # 2 weeks (short context wins)
 pool_size: 30
 ```
 
-### Performance Metrics
+### Performance Metrics (same test split)
 - **Good-or-Better (GoB)**: Primary metric (5/5 Excellent + 4/5 Good)
-- **Baseline @K=30**: 65.8% GoB
+- **Hybrid @K=30**: 69.9% GoB (production)
 - **Neural @K=30**: 68.2% GoB
-- **Neural Lift**: +2.5pp overall, +36.8pp on hard parts
+- **Baseline @K=30**: 65.8% GoB
+- **Neural Lift**: +2.4pp overall, +36.8pp on hard parts
+- **Hybrid Lift**: +1.6pp over pure neural
 
 ### Part Categories
 - **Hard Parts** (6): [8, 12, 13, 22, 23, 39] - Baseline <50% recall
@@ -80,14 +82,26 @@ Activates Dr. Synapse - Neuro-Symbolic ML Research Engineer
 - Checkpoint: `outputs/best_model/checkpoints/`
 - Fallback: frequency baseline
 
+### Closed Research Directions
+- **Column-enhanced neural** (2026-01-28): 6 architectures, none beat hybrid
+- **Per-column frequency** (2026-01-28): Worse than global baseline
+- **Ensemble strategies** (2026-01-26): 6 strategies, pure neural wins
+- **Symbolic rules**: +0pp metric improvement, interpretability only
+
 ## Session History
 - **2026-01-21**: Project initiated
 - **2026-01-22**: Synapse agent created
 - **2026-01-23**: RunPod H200 training (50 trials)
 - **2026-01-26**: Phase 2 complete on B200 (per-part + ensemble analysis)
 - **2026-01-27**: Part 12 investigation complete, hybrid strategy implemented
+- **2026-01-28**: Column-enhanced research closed, no improvement over hybrid
 
-## Next Steps
-1. ~~Investigate Part 12 anomaly~~ DONE
-2. Attention analysis (optional - for deeper understanding)
-3. ~~Production deployment preparation~~ DONE - hybrid strategy ready
+## Research Status
+All research phases complete. Production ready.
+
+## Possible Future Directions
+1. Monitoring dashboard (track live accuracy, detect drift)
+2. Periodic retraining pipeline (as new data accumulates)
+3. Dynamic K (vary pool size based on daily confidence)
+4. Maintenance scheduling (regime detection -- PRD Section 8, never pursued)
+5. Attention visualization (optional, for interpretability)

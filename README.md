@@ -47,16 +47,21 @@ This research developed a neuro-symbolic AI system to predict next-day staged pa
 
 | Strategy | Good-or-Better | Recommendation |
 |----------|----------------|----------------|
-| **Pure Neural** | **68.2%** | **RECOMMENDED** |
+| **Hybrid (Neural + Part 12 Baseline)** | **69.9%** | **PRODUCTION** |
+| Pure Neural | 68.2% | Superseded by hybrid |
 | Pure Baseline | 65.8% | Fallback option |
-| Ensemble strategies | 64.9-67.1% | No improvement over pure neural |
+| Ensemble strategies | 64.9-67.1% | No improvement |
+| Column-enhanced neural | 66.4-68.1% | No improvement |
 
-**Verdict**: Use pure neural model. Ensemble strategies don't outperform it.
+**Verdict**: Deploy hybrid strategy -- neural for parts 1-11, 13-39; frequency baseline for Part 12 only.
 
 ### Current Status
 
-**Phase 1 Complete** — Baseline established, neural provides ~3pp overall lift
-**Phase 2 Complete** — Neural lift concentrated on hard parts (+36.8pp), pure neural is optimal strategy
+**All Research Complete** -- Hybrid strategy (69.9% GoB @K=30) is the final production recommendation.
+- Phase 1: Baseline & neural comparison
+- Phase 2: Per-part analysis & ensemble experiments
+- Part 12: Investigation complete, hybrid fix implemented
+- Column-enhanced: 6 architectures tested, none improved over hybrid
 
 ---
 
@@ -277,9 +282,9 @@ python scripts/ablation_report.py   # Final comparison
 
 ---
 
-## Phase 2 Research: Deeper Analysis (In Progress)
+## Phase 2 Research: Deeper Analysis (Complete)
 
-Phase 1 established baselines and overall neural lift. Phase 2 explores whether the neural model captures exploitable structure that simpler methods miss.
+Phase 1 established baselines and overall neural lift. Phase 2 explored whether the neural model captures exploitable structure that simpler methods miss.
 
 ### Research Questions
 
@@ -384,7 +389,7 @@ Hard parts are genuinely stochastic, but neural model still captures them better
 | Identify which parts drive failures | ✅ Part 12 anomaly identified (neural 0%, baseline 36.5%) |
 | Neural captures patterns baseline misses? | ✅ YES - +36.8pp on hard parts vs +2.8pp on easy |
 | Ensemble gains over pure neural? | ✅ NO - Pure neural is optimal (68.2% GoB) |
-| Production recommendation | ✅ **Use pure neural model** |
+| Production recommendation | ✅ **Use hybrid strategy (neural + Part 12 baseline)** |
 
 ---
 
@@ -432,11 +437,38 @@ pip install torch pytorch-lightning optuna rich
 
 **Key Finding**: Neural lift is concentrated on hard parts (+36.8pp). Pure neural is optimal.
 
-**Overall Progress**: Phase 1 & Phase 2 complete. Production ready.
+### Column-Enhanced Research (2026-01-28) - Complete, No Improvement
+
+Tested whether column-position information could improve predictions:
+
+| Configuration | GoB | vs Hybrid |
+|---------------|-----|-----------|
+| column_output_heads | 68.08% | -1.82pp |
+| baseline_standard | 67.67% | -2.23pp |
+| column_aware_with_heads | 67.40% | -2.50pp |
+| column_features_embed | 67.26% | -2.64pp |
+| column_aware_embed | 66.58% | -3.32pp |
+| column_features_with_heads | 66.44% | -3.46pp |
+
+Per-column frequency baseline also failed (66.89% vs 68.67% global). Research direction CLOSED.
+
+**Overall Progress**: All research phases complete. Production ready (hybrid strategy @K=30, 69.9% GoB).
 
 ---
 
 ## Change Log
+
+### 2026-01-28 (Session 5 - Column-Enhanced Research Closed)
+- Tested 6 column-enhanced neural architectures on RunPod B200: none beat hybrid (69.9% GoB)
+- Per-column frequency baseline also failed (-1.78pp vs global)
+- Fixed PyTorch Lightning 2.0 compatibility issue in train_column_enhanced.py
+- Research direction CLOSED; hybrid strategy confirmed as final production recommendation
+
+### 2026-01-27 (Session 4 - Part 12 Investigation & Hybrid Strategy)
+- Investigated Part 12 anomaly (neural 0% recall, ranks 32-35 just outside K=30)
+- Implemented hybrid strategy: neural for 38 parts + baseline for Part 12
+- Result: 69.9% GoB (+1.6pp over pure neural, 12 days improved, 0 degraded)
+- Created production_inference.py with hybrid logic
 
 ### 2026-01-26 (Session 3 - Phase 1 & Phase 2 Complete)
 - Collected RunPod hyperopt results: 72.4% GoB @K=30 (best trial #43)
@@ -528,6 +560,6 @@ python scripts/production_inference.py --output prediction.txt
 
 ---
 
-**README Last Updated**: 2026-01-27
-**Research Status**: Phase 1, Phase 2, & Part 12 Investigation Complete
-**Production Status**: Ready (Hybrid Strategy Recommended)
+**README Last Updated**: 2026-01-28
+**Research Status**: All phases complete (Phase 1, Phase 2, Part 12, Column-Enhanced)
+**Production Status**: Ready (Hybrid Strategy @K=30, 69.9% GoB)
