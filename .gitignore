@@ -54,6 +54,8 @@ runpod_package/data/
 *.pt
 *.pth
 *.ckpt
+# Exception: production model state dict (small, needed for inference)
+!outputs/outputs/best_model/checkpoints/model_state_dict.pt
 *.h5
 *.pkl
 *.pickle

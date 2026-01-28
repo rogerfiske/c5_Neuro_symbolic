@@ -87,23 +87,27 @@ def load_neural_model(checkpoint_path, config_path):
         config = yaml.safe_load(f)
 
     model = create_model(config)
-    checkpoint = torch.load(checkpoint_path, map_location='cpu', weights_only=False)
 
-    if 'state_dict' in checkpoint:
-        state_dict = checkpoint['state_dict']
-        new_state_dict = {}
-        for k, v in state_dict.items():
-            if k.startswith('model.'):
-                new_state_dict[k[6:]] = v
-            elif not k.startswith('loss_fn'):
-                new_state_dict[k] = v
-
-        if new_state_dict:
-            model.load_state_dict(new_state_dict, strict=False)
-        else:
-            model.load_state_dict(state_dict, strict=False)
+    # Prefer re-saved state_dict (numpy-version-independent) over raw checkpoint
+    state_dict_path = checkpoint_path.parent / 'model_state_dict.pt'
+    if state_dict_path.exists():
+        state_dict = torch.load(state_dict_path, map_location='cpu', weights_only=False)
     else:
-        model.load_state_dict(checkpoint, strict=False)
+        checkpoint = torch.load(checkpoint_path, map_location='cpu', weights_only=False)
+        state_dict = checkpoint.get('state_dict', checkpoint)
+
+    # Strip Lightning 'model.' prefix if present
+    new_state_dict = {}
+    for k, v in state_dict.items():
+        if k.startswith('model.'):
+            new_state_dict[k[6:]] = v
+        elif not k.startswith('loss_fn'):
+            new_state_dict[k] = v
+
+    if new_state_dict:
+        model.load_state_dict(new_state_dict, strict=False)
+    else:
+        model.load_state_dict(state_dict, strict=False)
 
     model.eval()
     return model, config
@@ -254,8 +258,8 @@ def main():
     # Setup paths
     base_dir = Path(__file__).parent.parent
     data_path = base_dir / 'data' / 'raw' / 'CA5_date.csv'
-    checkpoint_dir = base_dir / 'outputs' / 'best_model' / 'checkpoints'
-    config_path = base_dir / 'outputs' / 'best_model' / 'config.yaml'
+    checkpoint_dir = base_dir / 'outputs' / 'outputs' / 'best_model' / 'checkpoints'
+    config_path = base_dir / 'outputs' / 'outputs' / 'best_model' / 'config.yaml'
 
     # Load data
     print("Loading data...")
