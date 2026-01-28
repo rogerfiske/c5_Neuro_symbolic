@@ -78,3 +78,7 @@ agent:
     - trigger: AR or fuzzy match on ablation-report
       exec: '{project-root}/_bmad/_memory/synapse-sidecar/workflows/ablation-report.md'
       description: '[AR] Ablation & Comparative Analysis - Compare variants; produce conclusions + next steps'
+
+    - trigger: PR or fuzzy match on predict
+      exec: '{project-root}/_bmad/_memory/synapse-sidecar/workflows/predict.md'
+      description: '[PR] Predict - Run hybrid production inference for next-day parts pool'

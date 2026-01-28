@@ -1,8 +1,8 @@
 # Session Summary: 2026-01-28
 
 ## Session Overview
-**Focus**: Column-Enhanced Neural Experiments - RunPod Execution and Results Analysis
-**Outcome**: Research direction closed - no improvement over hybrid strategy
+**Focus**: Column-Enhanced Research (morning) + Documentation Cleanup & Inference Fix (afternoon)
+**Outcome**: All research closed, docs synchronized, production inference working locally
 
 ---
 
@@ -42,53 +42,77 @@ Ran 6 neural architectures on RunPod B200:
 - Documented all experiment results
 - Confirmed hybrid strategy as final production recommendation
 
+### 5. Documentation Cleanup (Priority 1)
+- **`.project_memory.md`**: Full rewrite -- was 5 sessions stale (still said "research starting")
+- **`README.md`**: Fixed contradictory production recommendations (said both "pure neural" and "hybrid"), updated Phase 2 heading, added changelog entries
+- **`CLAUDE.md`**: Added closed research directions, replaced stale next steps, updated metrics
+
+### 6. Fixed Production Inference Script
+- **Path bug**: Script looked for `outputs/best_model/` but files were at `outputs/outputs/best_model/`
+- **NumPy compatibility**: Checkpoint saved with NumPy 2.x, local env has NumPy 1.26
+- **Fix**: Re-saved model weights as pure torch tensors (`model_state_dict.pt`), updated script to prefer this format
+- **Result**: Neural model now loads and runs locally
+
+### 7. First Production Prediction Generated
+- Ran hybrid prediction for 2026-01-28
+- Saved to `predictions/prediction_2026-01-28.txt`
+- Created `predictions/` directory for storing prediction outputs
+
+### 8. Added Predict Menu Command
+- Created `predict.md` workflow in synapse sidecar
+- Added `[PR] Predict` to Synapse agent menu
+- Trigger: `PR` or fuzzy match on "predict"
+
 ---
 
 ## Files Created
 
 | File | Purpose |
 |------|---------|
-| `Start_Here_Tomorrow_2026-01-29.md` | Next session guide |
-| `Session_Summary_2026-01-28.md` | This file |
+| `predictions/prediction_2026-01-28.txt` | First production prediction |
+| `_bmad/_memory/synapse-sidecar/workflows/predict.md` | Prediction workflow |
+| `_bmad-output/bmb-creations/synapse/synapse-sidecar/workflows/predict.md` | Prediction workflow (copy) |
+| `outputs/outputs/best_model/checkpoints/model_state_dict.pt` | NumPy-independent model weights |
+| `outputs/outputs/best_model/checkpoints/hparams.json` | Model hyperparameters |
 
 ## Files Modified
 
 | File | Changes |
 |------|---------|
+| `.project_memory.md` | Full rewrite to current state |
+| `README.md` | Fixed contradictions, added changelog, column-enhanced results |
+| `CLAUDE.md` | Added closed research, updated next steps and metrics |
+| `scripts/production_inference.py` | Fixed checkpoint path + numpy compat |
+| `.gitignore` | Added exception for model_state_dict.pt |
+| `_bmad-output/.../synapse.agent.yaml` | Added PR (Predict) menu command |
 | `runpod_package/train_column_enhanced.py` | Lightning 2.0 API fix |
 | `runpod_package/README_RUNPOD.md` | Clarified standalone usage |
 | `docs/research_backlog_neural_column_features.md` | Added results, marked CLOSED |
-
-## Files Added from RunPod
-
-| Directory | Contents |
-|-----------|----------|
-| `outputs/outputs/column_enhanced/column_enhanced/` | 6 model training logs and results |
-| `outputs/per_column_experiment/` | Per-column frequency results |
 
 ---
 
 ## Commits Made
 
 1. `de2e78f` - Close column-enhanced research: no improvement over hybrid (69.9% GoB)
+2. `c3b10c4` - Sync project docs to current state: all research complete, hybrid production-ready
+3. `42f27cb` - Fix production inference: correct checkpoint path and numpy compatibility
+4. `c33be99` - Add first production prediction for 2026-01-28
 
 ---
 
 ## Key Findings
 
 ### Column-Position Information Does NOT Help
-
 Two approaches tested, both failed:
+1. **Neural Column Enhancements**: 6 architectures, none improved
+2. **Per-Column Frequency Baseline**: Worse than global baseline (-1.78pp)
 
-1. **Neural Column Enhancements**: Adding column embeddings, column features, or per-column output heads to the neural model did not improve predictions.
+### Production Inference Was Broken Locally
+Two bugs prevented local neural inference:
+1. Checkpoint path was wrong (double `outputs/` nesting)
+2. NumPy version mismatch between RunPod (2.x) and local (1.26)
 
-2. **Per-Column Frequency Baseline**: Using column-specific K values for frequency baseline performed worse than global baseline.
-
-### Possible Explanations
-
-- The neural model may already implicitly learn column-relevant patterns
-- Column distributions, while real, may not be predictive of future parts
-- The near-uniform part distribution limits any model's ceiling
+Both fixed. Neural model now runs locally.
 
 ---
 
@@ -105,36 +129,16 @@ Two approaches tested, both failed:
 
 ---
 
-## Project Completion Status
-
-| Phase | Status |
-|-------|--------|
-| Phase 1: Baseline & Neural | COMPLETE |
-| Phase 2: Per-Part & Ensemble | COMPLETE |
-| Part 12 Investigation | COMPLETE |
-| Hybrid Strategy | IMPLEMENTED |
-| Column-Enhanced Research | COMPLETE (No Improvement) |
-| **Production Inference** | **READY** |
-
----
-
 ## Session Statistics
 
 - RunPod experiments completed: 6 neural + 4 frequency
-- Lightning 2.0 bugs fixed: 1
-- Research directions closed: 2
-- Commits pushed: 1
+- Production bugs fixed: 2 (path + numpy compat)
+- Documentation files rewritten/updated: 3
+- Menu commands added: 1 (PR - Predict)
+- Commits pushed: 4
 - Final GoB achieved: 69.9% (unchanged, hybrid remains best)
 
 ---
 
-## Recommendations for Future Work
-
-1. **Monitoring Dashboard** - Track prediction accuracy over time
-2. **Periodic Retraining** - Update model as new data accumulates
-3. **Attention Visualization** - Understand what patterns the model learned
-
----
-
 **Session End Time**: 2026-01-28
-**Project Status**: Production Ready - All Research Complete
+**Project Status**: Production Ready - All Research Complete, Inference Working Locally

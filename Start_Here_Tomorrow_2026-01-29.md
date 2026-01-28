@@ -4,36 +4,47 @@
 
 ## Quick Context
 **Project**: C5 Neuro-Symbolic Predictive Maintenance
-**Status**: Production Ready (Hybrid Strategy) - All Research Complete
-**Last Session**: Column-enhanced experiments completed, no improvement found
+**Status**: Production Ready - All Research Complete, Inference Working Locally
+**Last Session**: Doc cleanup, inference fix, first prediction generated
 
 ---
 
 ## What Was Accomplished (2026-01-28)
 
-### Column-Enhanced Neural Experiments (RunPod B200)
+### Documentation Cleanup
+- `.project_memory.md` fully rewritten (was 5 sessions stale)
+- `README.md` contradictions fixed (hybrid is the recommendation, not pure neural)
+- `CLAUDE.md` updated with closed research directions and current status
 
-Tested 6 neural architectures incorporating column-position information:
+### Production Inference Fixed
+- Checkpoint path corrected (`outputs/outputs/best_model/`)
+- NumPy 1.x/2.x pickle incompatibility resolved (re-saved as pure torch tensors)
+- Neural model now loads and runs locally
 
-| Configuration | GoB | vs Hybrid |
-|---------------|-----|-----------|
-| column_output_heads | 68.08% | -1.82pp |
-| baseline_standard | 67.67% | -2.23pp |
-| column_aware_with_heads | 67.40% | -2.50pp |
-| column_features_embed | 67.26% | -2.64pp |
-| column_aware_embed | 66.58% | -3.32pp |
-| column_features_with_heads | 66.44% | -3.46pp |
+### New: Predict Command
+- `PR` added to Synapse menu
+- Runs hybrid inference, saves to `predictions/` directory
 
-**Result**: None beat the hybrid strategy (69.9% GoB). Research direction CLOSED.
+---
 
-### Per-Column Frequency Baseline
+## Quick Commands
 
-| Strategy | GoB | vs Global |
-|----------|-----|-----------|
-| Global Baseline | 68.67% | - |
-| Per-Col Optimized K | 66.89% | -1.78pp |
+### Run Daily Prediction
+```bash
+cd C:\Users\Minis\CascadeProjects\c5_neuro_symbolic
+python scripts/production_inference.py --date 2026-01-29 --output predictions/prediction_2026-01-29.txt
+```
 
-**Result**: Per-column frequency also did NOT improve. Research direction CLOSED.
+### Or via Synapse Menu
+```
+/synapse
+PR
+```
+
+### Baseline-Only Mode (No Neural Model)
+```bash
+python scripts/production_inference.py --baseline-only --output predictions/prediction_2026-01-29.txt
+```
 
 ---
 
@@ -50,27 +61,23 @@ Tested 6 neural architectures incorporating column-position information:
 
 ---
 
-## Quick Commands
+## Synapse Menu
 
-### Run Production Inference (Hybrid)
-```bash
-cd C:\Users\Minis\CascadeProjects\c5_neuro_symbolic
-python scripts/production_inference.py
-```
-
-### Predict for Specific Date
-```bash
-python scripts/production_inference.py --date 2026-01-30
-```
-
-### Baseline-Only Mode (No GPU)
-```bash
-python scripts/production_inference.py --baseline-only
-```
+| Code | Workflow |
+|------|----------|
+| DP | Data Profiling |
+| BL | Baseline Suite |
+| FS | Feature Schema |
+| RD | Rulebook Draft |
+| NP | Neural Prototype |
+| HI | Hybrid Inference |
+| KO | K-Optimizer |
+| AR | Ablation Report |
+| **PR** | **Predict (NEW)** |
 
 ---
 
-## Project Status Summary
+## Project Status
 
 | Phase | Status |
 |-------|--------|
@@ -79,25 +86,30 @@ python scripts/production_inference.py --baseline-only
 | Part 12 Investigation | COMPLETE |
 | Hybrid Strategy | IMPLEMENTED |
 | Column-Enhanced Research | COMPLETE (No Improvement) |
-| **Production Inference** | **READY** |
+| Documentation Cleanup | COMPLETE |
+| Production Inference | WORKING LOCALLY |
+| **First Prediction** | **GENERATED (2026-01-28)** |
 
 ---
 
-## Key Files Reference
+## Key Files
 
 | File | Purpose |
 |------|---------|
 | `scripts/production_inference.py` | Production inference (hybrid strategy) |
-| `outputs/best_model/checkpoints/` | Neural model checkpoint |
-| `docs/research_backlog_neural_column_features.md` | Column research (closed) |
+| `outputs/outputs/best_model/checkpoints/model_state_dict.pt` | Neural model weights |
+| `outputs/outputs/best_model/config.yaml` | Model configuration |
+| `predictions/` | Saved prediction outputs |
 
 ---
 
 ## Optional Future Work
 
-1. **Monitoring Dashboard** - Track actual tier rates vs predictions
-2. **Model Retraining** - Periodic retraining as new data accumulates
-3. **Attention Analysis** - Visualize what the model learned
+1. **Score predictions against actuals** -- when today's real parts are known, compare against yesterday's prediction
+2. **Monitoring dashboard** -- track tier rates over time
+3. **Periodic retraining** -- update model as new data accumulates
+4. **Dynamic K** -- vary pool size based on daily confidence
+5. **Maintenance scheduling** -- regime detection (PRD Section 8, never pursued)
 
 ---
 
